@@ -1,0 +1,9 @@
+{
+  "bindings": [
+    {
+      "name": "pricing",
+      "type": "activityTrigger",
+      "direction": "in"
+    }
+  ]
+}

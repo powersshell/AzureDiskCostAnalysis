@@ -1,0 +1,16 @@
+{
+  "bindings": [
+    {
+      "name": "params",
+      "type": "activityTrigger",
+      "direction": "in"
+    },
+    {
+      "tableName": "VMDiskInfo",
+      "name": "TableBinding",
+      "connection": "AzureWebJobsStorage",
+      "type": "table",
+      "direction": "out"
+    }
+  ]
+}

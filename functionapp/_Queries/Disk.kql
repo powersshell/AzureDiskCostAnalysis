@@ -1,0 +1,29 @@
+resources
+| where type == 'microsoft.compute/virtualmachines'
+| extend
+    JoinID = tolower(id),
+    PRIMARY_NIC = tostring(properties.networkProfile.networkInterfaces[0].id),
+    OSName = tostring(properties.osProfile.computerName),
+    OSType = tostring(properties.storageProfile.osDisk.osType),
+    VMSize = tostring(properties.hardwareProfile.vmSize),
+    RG = resourceGroup,
+    Location = location,
+    os_disk_name = tostring(properties.storageProfile.osDisk.name),
+    SubscriptionId = subscriptionId
+| join kind=leftouter (
+    resources
+    | where type == 'microsoft.compute/disks'
+    | extend 
+        DiskName = name,
+        DiskId = id,
+        DiskTier = tostring(sku.name),
+        DiskSku = tostring(properties.tier),
+        DiskSize = tostring(properties.diskSizeGB),
+        DiskMaxIOPS = tostring(properties.diskIOPSReadWrite),
+        DiskMaxMBpsRW = tostring(properties.diskMBpsReadWrite),
+        CreatedTime = tostring(properties.timeCreated),
+        AttachedBy = tolower(managedBy)
+) on $left.JoinID == $right.AttachedBy
+| project SubscriptionId, Location, RG, VMResourceId = id, VMName = name, ComputerName = OSName, OSType, VMSize, DiskResourceId = DiskId,DiskName, DiskSize, DiskTier, DiskSku, DiskMaxIOPS, DiskMaxMBpsRW, CreatedTime
+| order by tolower(SubscriptionId),tolower(ComputerName) asc
+| order by ['ComputerName'] asc
