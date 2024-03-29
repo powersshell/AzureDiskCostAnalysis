@@ -10,4 +10,5 @@
     'Az.Compute' = '5.*'
     'Join-Object' = '2.0.2'
     'Az.Storage' = '3.7.0'
+    'Az.Monitor' = '5.*'
 }
